@@ -1,7 +1,8 @@
-// Типы для данных, получаемых с API
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { fetchCoordinates } from "../../api/google-api"
 import { calculateDistance } from "../../utils/calculator"
+import { roundToNearest10km } from "../../utils/distanceRound"
+import { Autocomplete, LoadScript } from "@react-google-maps/api"
 
 export type Coordinates = {
   lat: number
@@ -14,6 +15,9 @@ export default function DistanceCalculator() {
   const [coords1, setCoords1] = useState<Coordinates | null>(null)
   const [coords2, setCoords2] = useState<Coordinates | null>(null)
   const [distance, setDistance] = useState<number | null>(null)
+
+  const autocompleteRef1 = useRef<google.maps.places.Autocomplete | null>(null)
+  const autocompleteRef2 = useRef<google.maps.places.Autocomplete | null>(null)
 
   // Обработчик для изменения города 1
   useEffect(() => {
@@ -37,10 +41,6 @@ export default function DistanceCalculator() {
     void getCoordinatesForCity()
   }, [city2])
 
-  const roundToNearest10km = (distance: number): number => {
-    return Math.round(distance / 10) * 10 // Округление до ближайших 10 км
-  }
-
   // Вычисление расстояния при изменении координат
   useEffect(() => {
     if (coords1 && coords2) {
@@ -50,5 +50,41 @@ export default function DistanceCalculator() {
     }
   }, [coords1, coords2])
 
-  return <div></div>
+  const handlePlaceChanged = (
+    autocomplete: google.maps.places.Autocomplete,
+    setCity: Dispatch<SetStateAction<string>>,
+  ) => {
+    const place = autocomplete.getPlace()
+    if (place.name) {
+      setCity(place.name)
+    }
+  }
+
+  return (
+    <div>
+      <LoadScript googleMapsApiKey={""} libraries={['places']}>
+        <div>
+          <Autocomplete
+            onLoad={(autocomplete) => (autocompleteRef1.current = autocomplete)}
+            onPlaceChanged={() => {
+              handlePlaceChanged(autocompleteRef1.current!, setCity1)
+            }}
+          >
+            <input type="text" value={city1} onChange={(e) => setCity1(e.target.value)} />
+          </Autocomplete>
+          <Autocomplete
+              onLoad={(autocomplete) => (autocompleteRef2.current = autocomplete)}
+              onPlaceChanged={() => handlePlaceChanged(autocompleteRef2.current!, setCity2)}
+          >
+            <input
+                type="text"
+                value={city2}
+                onChange={(e) => setCity2(e.target.value)}
+                placeholder="Введите название второго города"
+            />
+          </Autocomplete>
+        </div>
+      </LoadScript>
+    </div>
+  )
 }
