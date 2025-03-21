@@ -2,7 +2,7 @@ import axios from "axios"
 import { Coordinates } from "../components/DistanceCalculator/DistanceCalculator"
 
 export const fetchCoordinates = async (city: string): Promise<Coordinates | null> => {
-  const apiKey = "YOUR_OPENCAGE_API_KEY"
+  const apiKey = process.env.OPENCAGEDATA_API_KEY
   try {
     const response = await axios.get(
       `https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${apiKey}`,

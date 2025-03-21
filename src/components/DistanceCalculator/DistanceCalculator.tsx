@@ -2,12 +2,14 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { fetchCoordinates } from "../../api/google-api"
 import { calculateDistance } from "../../utils/calculator"
 import { roundToNearest10km } from "../../utils/distanceRound"
-import { Autocomplete, LoadScript } from "@react-google-maps/api"
+import { Autocomplete, Libraries, LoadScript } from "@react-google-maps/api"
 
 export type Coordinates = {
   lat: number
   lng: number
 }
+
+const libraries = ["places"] as Libraries
 
 export default function DistanceCalculator() {
   const [city1, setCity1] = useState<string>("")
@@ -62,7 +64,10 @@ export default function DistanceCalculator() {
 
   return (
     <div>
-      <LoadScript googleMapsApiKey={"process.env.GOOGLE_MAPS_API_KEY as string"} libraries={['places']}>
+      <LoadScript
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY as string}
+        libraries={libraries}
+      >
         <div>
           <Autocomplete
             onLoad={(autocomplete) => (autocompleteRef1.current = autocomplete)}
@@ -73,16 +78,21 @@ export default function DistanceCalculator() {
             <input type="text" value={city1} onChange={(e) => setCity1(e.target.value)} />
           </Autocomplete>
           <Autocomplete
-              onLoad={(autocomplete) => (autocompleteRef2.current = autocomplete)}
-              onPlaceChanged={() => handlePlaceChanged(autocompleteRef2.current!, setCity2)}
+            onLoad={(autocomplete) => (autocompleteRef2.current = autocomplete)}
+            onPlaceChanged={() => handlePlaceChanged(autocompleteRef2.current!, setCity2)}
           >
             <input
-                type="text"
-                value={city2}
-                onChange={(e) => setCity2(e.target.value)}
-                placeholder="Введите название второго города"
+              type="text"
+              value={city2}
+              onChange={(e) => setCity2(e.target.value)}
+              placeholder="Введите название второго города"
             />
           </Autocomplete>
+          {distance && (
+              <div>
+                <h3>Расстояние между городами: {distance} км</h3>
+              </div>
+          )}
         </div>
       </LoadScript>
     </div>
