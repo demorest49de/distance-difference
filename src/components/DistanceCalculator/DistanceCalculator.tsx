@@ -7,11 +7,14 @@ export type Coordinates = {
   lng: number
 }
 
+const fakeCoords1 : Coordinates= {lat: 51.6687, lng: 39.1840}
+const fakeCoords2 : Coordinates= {lat: 55.755864, lng: 37.617698}
+
 export default function DistanceCalculator() {
   const [city1, setCity1] = useState<string>("Воронеж")
   const [city2, setCity2] = useState<string>("Москва")
-  const [coords1, setCoords1] = useState<Coordinates | null>(null)
-  const [coords2, setCoords2] = useState<Coordinates | null>(null)
+  const [coords1, setCoords1] = useState<Coordinates | null>(fakeCoords1)
+  const [coords2, setCoords2] = useState<Coordinates | null>(fakeCoords2)
   const [distance, setDistance] = useState<number | null>(null)
 
   // useEffect(() => {
