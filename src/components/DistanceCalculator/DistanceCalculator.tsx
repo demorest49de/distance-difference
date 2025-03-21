@@ -34,14 +34,19 @@ export default function DistanceCalculator() {
         setCoords2(coords)
       }
     }
-    getCoordinatesForCity()
+    void getCoordinatesForCity()
   }, [city2])
+
+  const roundToNearest10km = (distance: number): number => {
+    return Math.round(distance / 10) * 10 // Округление до ближайших 10 км
+  }
 
   // Вычисление расстояния при изменении координат
   useEffect(() => {
     if (coords1 && coords2) {
       const dist = calculateDistance(coords1.lat, coords1.lng, coords2.lat, coords2.lng)
-      setDistance(dist)
+      const roundedDistance = roundToNearest10km(dist)
+      setDistance(roundedDistance)
     }
   }, [coords1, coords2])
 
