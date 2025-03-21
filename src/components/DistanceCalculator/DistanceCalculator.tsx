@@ -62,7 +62,7 @@ export default function DistanceCalculator() {
 
   return (
     <div>
-      <LoadScript googleMapsApiKey={""} libraries={['places']}>
+      <LoadScript googleMapsApiKey={"process.env.GOOGLE_MAPS_API_KEY as string"} libraries={['places']}>
         <div>
           <Autocomplete
             onLoad={(autocomplete) => (autocompleteRef1.current = autocomplete)}
