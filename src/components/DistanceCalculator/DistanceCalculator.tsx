@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
+import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react"
 import { fetchCoordinates } from "../../api/yandex-api"
 import { calculateDistance } from "../../utils/calculator"
 import { roundToNearest10km } from "../../utils/distanceRound"
@@ -8,31 +8,31 @@ export type Coordinates = {
 }
 
 export default function DistanceCalculator() {
-  const [city1, setCity1] = useState<string>("")
-  const [city2, setCity2] = useState<string>("")
+  const [city1, setCity1] = useState<string>("Воронеж")
+  const [city2, setCity2] = useState<string>("Москва")
   const [coords1, setCoords1] = useState<Coordinates | null>(null)
   const [coords2, setCoords2] = useState<Coordinates | null>(null)
   const [distance, setDistance] = useState<number | null>(null)
 
-  useEffect(() => {
-    const getCoordinatesForCity = async () => {
-      if (city1) {
-        const coords = await fetchCoordinates(city1)
-        setCoords1(coords)
-      }
-    }
-    void getCoordinatesForCity()
-  }, [city1])
-
-  useEffect(() => {
-    const getCoordinatesForCity = async () => {
-      if (city2) {
-        const coords = await fetchCoordinates(city2)
-        setCoords2(coords)
-      }
-    }
-    void getCoordinatesForCity()
-  }, [city2])
+  // useEffect(() => {
+  //   const getCoordinatesForCity = async () => {
+  //     if (city1) {
+  //       const coords = await fetchCoordinates(city1)
+  //       setCoords1(coords)
+  //     }
+  //   }
+  //   void getCoordinatesForCity()
+  // }, [city1])
+  //
+  // useEffect(() => {
+  //   const getCoordinatesForCity = async () => {
+  //     if (city2) {
+  //       const coords = await fetchCoordinates(city2)
+  //       setCoords2(coords)
+  //     }
+  //   }
+  //   void getCoordinatesForCity()
+  // }, [city2])
 
   useEffect(() => {
     if (coords1 && coords2) {
@@ -41,8 +41,6 @@ export default function DistanceCalculator() {
       setDistance(roundedDistance)
     }
   }, [coords1, coords2])
-
-
 
   const handlePlaceChanged = (
     e: ChangeEvent<HTMLInputElement>,
@@ -54,7 +52,7 @@ export default function DistanceCalculator() {
   return (
     <div>
       <h1>Расстояние между городами</h1>
-      <div>
+      <div style={{display: "flex", columnGap: "4px", justifyContent: "center"}}>
         <input
           type="text"
           placeholder="Город 1"
