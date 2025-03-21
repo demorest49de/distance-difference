@@ -1,15 +1,11 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
-import { fetchCoordinates } from "../../api/google-api"
+import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
+import { fetchCoordinates } from "../../api/yandex-api"
 import { calculateDistance } from "../../utils/calculator"
 import { roundToNearest10km } from "../../utils/distanceRound"
-import { Autocomplete, Libraries, LoadScript } from "@react-google-maps/api"
-
 export type Coordinates = {
   lat: number
   lng: number
 }
-
-const libraries = ["places"] as Libraries
 
 export default function DistanceCalculator() {
   const [city1, setCity1] = useState<string>("")
@@ -18,10 +14,6 @@ export default function DistanceCalculator() {
   const [coords2, setCoords2] = useState<Coordinates | null>(null)
   const [distance, setDistance] = useState<number | null>(null)
 
-  const autocompleteRef1 = useRef<google.maps.places.Autocomplete | null>(null)
-  const autocompleteRef2 = useRef<google.maps.places.Autocomplete | null>(null)
-
-  // Обработчик для изменения города 1
   useEffect(() => {
     const getCoordinatesForCity = async () => {
       if (city1) {
@@ -32,7 +24,6 @@ export default function DistanceCalculator() {
     void getCoordinatesForCity()
   }, [city1])
 
-  // Обработчик для изменения города 2
   useEffect(() => {
     const getCoordinatesForCity = async () => {
       if (city2) {
@@ -43,7 +34,6 @@ export default function DistanceCalculator() {
     void getCoordinatesForCity()
   }, [city2])
 
-  // Вычисление расстояния при изменении координат
   useEffect(() => {
     if (coords1 && coords2) {
       const dist = calculateDistance(coords1.lat, coords1.lng, coords2.lat, coords2.lng)
@@ -52,49 +42,33 @@ export default function DistanceCalculator() {
     }
   }, [coords1, coords2])
 
+
+
   const handlePlaceChanged = (
-    autocomplete: google.maps.places.Autocomplete,
+    e: ChangeEvent<HTMLInputElement>,
     setCity: Dispatch<SetStateAction<string>>,
   ) => {
-    const place = autocomplete.getPlace()
-    if (place.name) {
-      setCity(place.name)
-    }
+    setCity(e.target.value)
   }
 
   return (
     <div>
-      <LoadScript
-        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY as string}
-        libraries={libraries}
-      >
-        <div>
-          <Autocomplete
-            onLoad={(autocomplete) => (autocompleteRef1.current = autocomplete)}
-            onPlaceChanged={() => {
-              handlePlaceChanged(autocompleteRef1.current!, setCity1)
-            }}
-          >
-            <input type="text" value={city1} onChange={(e) => setCity1(e.target.value)} />
-          </Autocomplete>
-          <Autocomplete
-            onLoad={(autocomplete) => (autocompleteRef2.current = autocomplete)}
-            onPlaceChanged={() => handlePlaceChanged(autocompleteRef2.current!, setCity2)}
-          >
-            <input
-              type="text"
-              value={city2}
-              onChange={(e) => setCity2(e.target.value)}
-              placeholder="Введите название второго города"
-            />
-          </Autocomplete>
-          {distance && (
-              <div>
-                <h3>Расстояние между городами: {distance} км</h3>
-              </div>
-          )}
-        </div>
-      </LoadScript>
+      <h1>Расстояние между городами</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Город 1"
+          value={city1}
+          onChange={(e) => handlePlaceChanged(e, setCity1)}
+        />
+        <input
+          type="text"
+          placeholder="Город 2"
+          value={city2}
+          onChange={(e) => handlePlaceChanged(e, setCity2)}
+        />
+      </div>
+      {distance && <p>Расстояние: {distance} км</p>}
     </div>
   )
 }
