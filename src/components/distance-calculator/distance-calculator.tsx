@@ -84,8 +84,6 @@ export default function DistanceCalculator() {
       const dist = calculateDistance(coords1.lat, coords1.lng, coords2.lat, coords2.lng)
       const roundedDistance = roundToNearest10km(dist)
       setDistance(roundedDistance)
-      setIsClicked1(false)
-      setIsClicked2(false)
     } else {
       setDistance(null)
     }
