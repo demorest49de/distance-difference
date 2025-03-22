@@ -1,14 +1,15 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react"
-import { fetchCoordinates } from "../../api/yandex-api"
+import { fetchCoordinates, fetchSuggestions } from "../../api/yandex-api"
 import { calculateDistance } from "../../utils/calculator"
 import { roundToNearest10km } from "../../utils/distanceRound"
+
 export type Coordinates = {
   lat: number
   lng: number
 }
 
-const fakeCoords1 : Coordinates= {lat: 51.6687, lng: 39.1840}
-const fakeCoords2 : Coordinates= {lat: 55.755864, lng: 37.617698}
+const fakeCoords1: Coordinates = { lat: 51.6687, lng: 39.184 }
+const fakeCoords2: Coordinates = { lat: 55.755864, lng: 37.617698 }
 
 export default function DistanceCalculator() {
   const [city1, setCity1] = useState<string>("Воронеж")
@@ -17,25 +18,52 @@ export default function DistanceCalculator() {
   const [coords2, setCoords2] = useState<Coordinates | null>(fakeCoords2)
   const [distance, setDistance] = useState<number | null>(null)
 
-  // useEffect(() => {
-  //   const getCoordinatesForCity = async () => {
-  //     if (city1) {
-  //       const coords = await fetchCoordinates(city1)
-  //       setCoords1(coords)
-  //     }
-  //   }
-  //   void getCoordinatesForCity()
-  // }, [city1])
-  //
-  // useEffect(() => {
-  //   const getCoordinatesForCity = async () => {
-  //     if (city2) {
-  //       const coords = await fetchCoordinates(city2)
-  //       setCoords2(coords)
-  //     }
-  //   }
-  //   void getCoordinatesForCity()
-  // }, [city2])
+  const [suggestions1, setSuggestions1] = useState<string[]>([])
+  const [suggestions2, setSuggestions2] = useState<string[]>([])
+
+  useEffect(() => {
+    const getSuggestions = async () => {
+      if (city1.length > 2) {
+        const suggestions = await fetchSuggestions(city1)
+        setSuggestions1(suggestions?.map((suggestion) => suggestion.title.text) as string[])
+      } else {
+        setSuggestions1([])
+      }
+    }
+    void getSuggestions()
+  }, [city1])
+
+  useEffect(() => {
+    const getSuggestions = async () => {
+      if (city2.length > 2) {
+        const suggestions = await fetchSuggestions(city2)
+        setSuggestions2(suggestions?.map((suggestion) => suggestion.title.text) as string[])
+      } else {
+        setSuggestions2([])
+      }
+    }
+    void getSuggestions()
+  }, [city2])
+
+  useEffect(() => {
+    const getCoordinatesForCity = async () => {
+      if (city1) {
+        const coords = await fetchCoordinates(city1)
+        setCoords1(coords)
+      }
+    }
+    // void getCoordinatesForCity()
+  }, [city1])
+
+  useEffect(() => {
+    const getCoordinatesForCity = async () => {
+      if (city2) {
+        const coords = await fetchCoordinates(city2)
+        setCoords2(coords)
+      }
+    }
+    // void getCoordinatesForCity()
+  }, [city2])
 
   useEffect(() => {
     if (coords1 && coords2) {
@@ -55,7 +83,7 @@ export default function DistanceCalculator() {
   return (
     <div>
       <h1>Расстояние между городами</h1>
-      <div style={{display: "flex", columnGap: "4px", justifyContent: "center"}}>
+      <div style={{ display: "flex", columnGap: "4px", justifyContent: "center" }}>
         <input
           type="text"
           placeholder="Город 1"
