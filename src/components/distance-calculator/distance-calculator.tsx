@@ -22,32 +22,31 @@ export default function DistanceCalculator() {
   const [coords2, setCoords2] = useState<Coordinates | null>(null)
   const [distance, setDistance] = useState<number | null>(null)
 
-  const [suggestions1, setSuggestions1] = useState<string[] | null>([])
-  const [suggestions2, setSuggestions2] = useState<string[] | null>([])
+  const [suggestions1, setSuggestions1] = useState<string[] | null>(null)
+  const [suggestions2, setSuggestions2] = useState<string[] | null>(null)
+
+  const [isClicked1, setIsClicked1] = useState<boolean>(false)
+  const [isClicked2, setIsClicked2] = useState<boolean>(false)
 
   useEffect(() => {
     const getCoordinatesForCity = async () => {
-      if (suggestions1?.length as number > 0) {
+      if (isClicked1) {
         const coords = await fetchCoordinates(city1)
         setCoords1(coords)
-      } else {
-        setDistance(null)
       }
     }
     void getCoordinatesForCity()
-  }, [suggestions1?.length])
+  }, [city1])
 
   useEffect(() => {
     const getCoordinatesForCity = async () => {
-      if (suggestions2?.length as number > 0) {
+      if (isClicked2) {
         const coords = await fetchCoordinates(city2)
         setCoords2(coords)
-      } else {
-        setDistance(null)
       }
     }
     void getCoordinatesForCity()
-  }, [suggestions2?.length])
+  }, [city2])
 
   // suggestions
   useEffect(() => {
@@ -79,8 +78,8 @@ export default function DistanceCalculator() {
       const dist = calculateDistance(coords1.lat, coords1.lng, coords2.lat, coords2.lng)
       const roundedDistance = roundToNearest10km(dist)
       setDistance(roundedDistance)
-      // setSuggestions1(null)
-      // setSuggestions2(null)
+    } else {
+      setDistance(null)
     }
   }, [coords1, coords2])
 
@@ -96,15 +95,17 @@ export default function DistanceCalculator() {
     city: string,
     setCity: Dispatch<SetStateAction<string>>,
     setSuggestions: Dispatch<SetStateAction<string[]> | null>,
+    setIsClicked: Dispatch<SetStateAction<boolean>>,
   ) => {
     setCity(city)
     setSuggestions(null)
+    setIsClicked(true)
   }
 
   const handleAnimation = () => {
     if (!(coords1 && coords2)) {
       return s.fade_in
-    } else if ((coords1 && coords2)) {
+    } else if (coords1 && coords2) {
       return s.fade_in
     } else if (!distance) {
       return s.fade_in
@@ -137,6 +138,7 @@ export default function DistanceCalculator() {
                         suggestion,
                         setCity1,
                         setSuggestions1 as Dispatch<SetStateAction<string[]> | null>,
+                        setIsClicked1 as Dispatch<SetStateAction<boolean>>,
                       )
                     }}
                   >
@@ -167,6 +169,7 @@ export default function DistanceCalculator() {
                         suggestion,
                         setCity2,
                         setSuggestions2 as Dispatch<SetStateAction<string[]> | null>,
+                        setIsClicked2 as Dispatch<SetStateAction<boolean>>,
                       )
                     }}
                   >
