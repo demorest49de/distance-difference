@@ -9,12 +9,6 @@ export type Coordinates = {
   lng: number
 }
 
-const mockCoords1: Coordinates = { lat: 51.6687, lng: 39.184 }
-const mockCoords2: Coordinates = { lat: 55.755864, lng: 37.617698 }
-
-const mockSugg1: string[] = ["Воронеж", "Воронеж1", "Воронеж2"]
-const mockSugg2: string[] = ["Москва", "Москва1", "Москва2"]
-
 export default function DistanceCalculator() {
   const [city1, setCity1] = useState<string>("")
   const [city2, setCity2] = useState<string>("")
@@ -27,8 +21,6 @@ export default function DistanceCalculator() {
 
   const [isClicked1, setIsClicked1] = useState<boolean>(false)
   const [isClicked2, setIsClicked2] = useState<boolean>(false)
-
-  console.log(" coords1  coords2: ", coords1, coords2)
 
   useEffect(() => {
     const getCoordinatesForCity = async () => {
@@ -188,16 +180,13 @@ export default function DistanceCalculator() {
           </div>
         </div>
       </div>
-      {/*{distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}*/}
-      <div className={`${s.fade_text} ${handleAnimation()}`}>
-        {distance ? (
-          <p>Расстояние: {distance} км</p>
-        ) : city1.toLocaleLowerCase().trim() === city2.toLocaleLowerCase().trim() ? (
-          <p>Введите разные названия городов</p>
-        ) : (
-          <p>Введите названия городов</p>
-        )}
-      </div>
+      {distance ? (
+        <p>Расстояние: {distance} км</p>
+      ) : city1.toLocaleLowerCase().trim() === city2.toLocaleLowerCase().trim() && (city1.trim() !== "") ? (
+        <p>Введите разные названия городов</p>
+      ) : (
+        <p>Введите названия городов</p>
+      )}
     </div>
   )
 }
