@@ -113,18 +113,6 @@ export default function DistanceCalculator() {
     setIsClicked(true)
   }
 
-  const handleAnimation = () => {
-    if (!(coords1 && coords2)) {
-      return s.fade_in
-    } else if (coords1 && coords2) {
-      return s.fade_in
-    } else if (!distance) {
-      return s.fade_in
-    } else {
-      return s.fade_out
-    }
-  }
-
   return (
     <div>
       <h1>Расстояние между городами</h1>
