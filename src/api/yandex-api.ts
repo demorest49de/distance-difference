@@ -5,7 +5,7 @@ export const fetchCoordinates = async (query: string): Promise<Coordinates | nul
   const apiKey = process.env.REACT_APP_YANDEX_MAPS_API_KEY
   try {
     const response = await fetch(
-      `https://geocode-maps.yandex.ru/v1/?apikey=${apiKey}&geocode=${query}&format=json&results=3`,
+      `https://geocode-maps.yandex.ru/v1/?apikey=${apiKey}&geocode=${query}&format=json&results=1`,
     )
     const data: GeoCoderResponse = await response.json()
     console.log(" data: ", data)
@@ -28,7 +28,7 @@ export const fetchSuggestions = async (
   const apiKey = process.env.REACT_APP_YANDEX_GEO_SUGGESTIONS_API_KEY
   try {
     const response = await fetch(
-      `https://suggest-maps.yandex.ru/v1/suggest?apikey=${apiKey}&text=${query}&format=json&results=3`,
+      `https://suggest-maps.yandex.ru/v1/suggest?apikey=${apiKey}&text=${query}&format=json&results=1`,
     )
     const data: GeoSuggestResponse = await response.json()
     console.log(" data: ", data)

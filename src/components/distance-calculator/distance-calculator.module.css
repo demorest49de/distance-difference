@@ -2,3 +2,38 @@
   color: #a140a1;
   cursor: pointer;
 }
+
+.fade_text {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.fade_in {
+  opacity: 1;
+  visibility: visible;
+  animation: fadeIn 1s forwards;
+}
+
+.fade_out {
+  opacity: 0;
+  visibility: hidden;
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

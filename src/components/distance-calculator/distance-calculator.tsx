@@ -2,7 +2,7 @@ import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } fro
 import { fetchCoordinates, fetchSuggestions } from "../../api/yandex-api"
 import { calculateDistance } from "../../utils/calculator"
 import { roundToNearest10km } from "../../utils/distanceRound"
-import s from './distance-calculator.module.css'
+import s from "./distance-calculator.module.css"
 
 export type Coordinates = {
   lat: number
@@ -22,8 +22,10 @@ export default function DistanceCalculator() {
   const [coords2, setCoords2] = useState<Coordinates | null>(null)
   const [distance, setDistance] = useState<number | null>(null)
 
-  const [suggestions1, setSuggestions1] = useState<string[]>(mockSugg1)
-  const [suggestions2, setSuggestions2] = useState<string[]>(mockSugg2)
+  const [suggestions1, setSuggestions1] = useState<string[]>([])
+  const [suggestions2, setSuggestions2] = useState<string[]>([])
+
+  const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     const getSuggestions = async () => {
@@ -71,6 +73,7 @@ export default function DistanceCalculator() {
 
   useEffect(() => {
     if (coords1 && coords2) {
+      setIsAnimating(true)
       const dist = calculateDistance(coords1.lat, coords1.lng, coords2.lat, coords2.lng)
       const roundedDistance = roundToNearest10km(dist)
       setDistance(roundedDistance)
@@ -94,6 +97,20 @@ export default function DistanceCalculator() {
     setSuggestions([])
   }
 
+  const handleAnimationEnd = () => {
+    setIsAnimating(false)
+  }
+
+  const handleAnimation = () => {
+    if (!(coords1 && coords2)) {
+      return s.fade_in
+    } else if (distance) {
+      return s.fade_in
+    } else {
+      return s.fade_out
+    }
+  }
+
   return (
     <div>
       <h1>Расстояние между городами</h1>
@@ -105,20 +122,23 @@ export default function DistanceCalculator() {
             value={city1}
             onChange={(e) => handlePlaceChanged(e, setCity1)}
           />
-          {suggestions1.length > 0 && (
-            <ul style={{ fontSize: "14px", textAlign: "start" }}>
-              {suggestions1.map((suggestion, index) => (
-                <li className={s.geo_item}
-                  key={index}
-                  onClick={() => {
-                    handleCitySelect(suggestion, setCity1, setSuggestions1)
-                  }}
-                >
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div style={{ height: "56px" }}>
+            {suggestions1.length > 0 && (
+              <ul style={{ fontSize: "14px", textAlign: "start" }}>
+                {suggestions1.map((suggestion, index) => (
+                  <li
+                    className={s.geo_item}
+                    key={index}
+                    onClick={() => {
+                      handleCitySelect(suggestion, setCity1, setSuggestions1)
+                    }}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <input
@@ -127,23 +147,31 @@ export default function DistanceCalculator() {
             value={city2}
             onChange={(e) => handlePlaceChanged(e, setCity2)}
           />
-          {suggestions2.length > 0 && (
-            <ul style={{ fontSize: "14px", textAlign: "start" }}>
-              {suggestions2.map((suggestion, index) => (
-                  <li className={s.geo_item}
-                  key={index}
-                  onClick={() => {
-                    handleCitySelect(suggestion, setCity2, setSuggestions2)
-                  }}
-                >
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div style={{ height: "56px" }}>
+            {suggestions2.length > 0 && (
+              <ul style={{ fontSize: "14px", textAlign: "start" }}>
+                {suggestions2.map((suggestion, index) => (
+                  <li
+                    className={s.geo_item}
+                    key={index}
+                    onClick={() => {
+                      handleCitySelect(suggestion, setCity2, setSuggestions2)
+                    }}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
-      {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}
+      <div
+        className={`${s.fade_text} ${handleAnimation()}`}
+        // onAnimationEnd={handleAnimationEnd}
+      >
+        {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}
+      </div>
     </div>
   )
 }
