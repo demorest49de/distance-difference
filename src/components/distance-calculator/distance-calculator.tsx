@@ -37,6 +37,7 @@ export default function DistanceCalculator() {
         setCoords1(coords)
       } else {
         setCoords1(null)
+        setIsClicked1(false)
       }
     }
     void getCoordinatesForCity()
@@ -49,6 +50,7 @@ export default function DistanceCalculator() {
         setCoords2(coords)
       } else {
         setCoords2(null)
+        setIsClicked2(false)
       }
     }
     void getCoordinatesForCity()
@@ -186,10 +188,16 @@ export default function DistanceCalculator() {
           </div>
         </div>
       </div>
-      {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}
-      {/*<div className={`${s.fade_text} ${handleAnimation()}`}>*/}
-      {/*  {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}*/}
-      {/*</div>*/}
+      {/*{distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}*/}
+      <div className={`${s.fade_text} ${handleAnimation()}`}>
+        {distance ? (
+          <p>Расстояние: {distance} км</p>
+        ) : city1.toLocaleLowerCase().trim() === city2.toLocaleLowerCase().trim() ? (
+          <p>Введите разные названия городов</p>
+        ) : (
+          <p>Введите названия городов</p>
+        )}
+      </div>
     </div>
   )
 }
