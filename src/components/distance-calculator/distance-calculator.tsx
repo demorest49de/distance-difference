@@ -58,7 +58,7 @@ export default function DistanceCalculator() {
   useEffect(() => {
     const getSuggestions = async () => {
       if (city1.length > 2 && suggestions1) {
-        const suggestions = await fetchSuggestions(city1)
+        const suggestions = await fetchSuggestions(city1.trim())
         setSuggestions1(suggestions?.map((suggestion) => suggestion.title.text) as string[])
       } else {
         setSuggestions1([])
@@ -73,7 +73,7 @@ export default function DistanceCalculator() {
   useEffect(() => {
     const getSuggestions = async () => {
       if (city2.length > 2 && suggestions2) {
-        const suggestions = await fetchSuggestions(city2)
+        const suggestions = await fetchSuggestions(city2.trim())
         setSuggestions2(suggestions?.map((suggestion) => suggestion.title.text) as string[])
       } else {
         setSuggestions2([])
