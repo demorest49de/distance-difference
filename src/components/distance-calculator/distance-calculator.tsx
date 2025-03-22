@@ -32,7 +32,10 @@ export default function DistanceCalculator() {
         setIsClicked1(false)
       }
     }
-    void getCoordinatesForCity()
+    const timer = setTimeout(() => {
+      void getCoordinatesForCity()
+    }, 500)
+    return () => clearTimeout(timer)
   }, [city1])
 
   useEffect(() => {
@@ -45,7 +48,10 @@ export default function DistanceCalculator() {
         setIsClicked2(false)
       }
     }
-    void getCoordinatesForCity()
+    const timer = setTimeout(() => {
+      void getCoordinatesForCity()
+    }, 500)
+    return () => clearTimeout(timer)
   }, [city2])
 
   // suggestions
@@ -58,7 +64,10 @@ export default function DistanceCalculator() {
         setSuggestions1([])
       }
     }
-    void getSuggestions()
+    const timer = setTimeout(() => {
+      void getSuggestions()
+    }, 500)
+    return () => clearTimeout(timer)
   }, [city1])
 
   useEffect(() => {
@@ -70,7 +79,10 @@ export default function DistanceCalculator() {
         setSuggestions2([])
       }
     }
-    void getSuggestions()
+    const timer = setTimeout(() => {
+      void getSuggestions()
+    }, 500)
+    return () => clearTimeout(timer)
   }, [city2])
 
   useEffect(() => {
@@ -182,7 +194,8 @@ export default function DistanceCalculator() {
       </div>
       {distance ? (
         <p>Расстояние: {distance} км</p>
-      ) : city1.toLocaleLowerCase().trim() === city2.toLocaleLowerCase().trim() && (city1.trim() !== "") ? (
+      ) : city1.toLocaleLowerCase().trim() === city2.toLocaleLowerCase().trim() &&
+        city1.trim() !== "" ? (
         <p>Введите разные названия городов</p>
       ) : (
         <p>Введите названия городов</p>
