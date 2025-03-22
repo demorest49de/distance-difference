@@ -22,61 +22,65 @@ export default function DistanceCalculator() {
   const [coords2, setCoords2] = useState<Coordinates | null>(null)
   const [distance, setDistance] = useState<number | null>(null)
 
-  const [suggestions1, setSuggestions1] = useState<string[]>([])
-  const [suggestions2, setSuggestions2] = useState<string[]>([])
-
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [suggestions1, setSuggestions1] = useState<string[] | null>([])
+  const [suggestions2, setSuggestions2] = useState<string[] | null>([])
 
   useEffect(() => {
+    const getCoordinatesForCity = async () => {
+      if (suggestions1?.length as number > 0) {
+        const coords = await fetchCoordinates(city1)
+        setCoords1(coords)
+      } else {
+        setDistance(null)
+      }
+    }
+    void getCoordinatesForCity()
+  }, [suggestions1?.length])
+
+  useEffect(() => {
+    const getCoordinatesForCity = async () => {
+      if (suggestions2?.length as number > 0) {
+        const coords = await fetchCoordinates(city2)
+        setCoords2(coords)
+      } else {
+        setDistance(null)
+      }
+    }
+    void getCoordinatesForCity()
+  }, [suggestions2?.length])
+
+  // suggestions
+  useEffect(() => {
     const getSuggestions = async () => {
-      if (city1.length > 2) {
+      if (city1.length > 2 && suggestions1) {
         const suggestions = await fetchSuggestions(city1)
         setSuggestions1(suggestions?.map((suggestion) => suggestion.title.text) as string[])
       } else {
         setSuggestions1([])
       }
     }
-    // void getSuggestions()
+    void getSuggestions()
   }, [city1])
 
   useEffect(() => {
     const getSuggestions = async () => {
-      if (city2.length > 2) {
+      if (city2.length > 2 && suggestions2) {
         const suggestions = await fetchSuggestions(city2)
         setSuggestions2(suggestions?.map((suggestion) => suggestion.title.text) as string[])
       } else {
         setSuggestions2([])
       }
     }
-    // void getSuggestions()
-  }, [city2])
-
-  useEffect(() => {
-    const getCoordinatesForCity = async () => {
-      if (city1.length > 2) {
-        const coords = await fetchCoordinates(city1)
-        setCoords1(coords)
-      }
-    }
-    // void getCoordinatesForCity()
-  }, [city1])
-
-  useEffect(() => {
-    const getCoordinatesForCity = async () => {
-      if (city2.length > 2) {
-        const coords = await fetchCoordinates(city2)
-        setCoords2(coords)
-      }
-    }
-    // void getCoordinatesForCity()
+    void getSuggestions()
   }, [city2])
 
   useEffect(() => {
     if (coords1 && coords2) {
-      setIsAnimating(true)
       const dist = calculateDistance(coords1.lat, coords1.lng, coords2.lat, coords2.lng)
       const roundedDistance = roundToNearest10km(dist)
       setDistance(roundedDistance)
+      // setSuggestions1(null)
+      // setSuggestions2(null)
     }
   }, [coords1, coords2])
 
@@ -91,20 +95,18 @@ export default function DistanceCalculator() {
   const handleCitySelect = (
     city: string,
     setCity: Dispatch<SetStateAction<string>>,
-    setSuggestions: Dispatch<SetStateAction<string[]>>,
+    setSuggestions: Dispatch<SetStateAction<string[]> | null>,
   ) => {
     setCity(city)
-    setSuggestions([])
-  }
-
-  const handleAnimationEnd = () => {
-    setIsAnimating(false)
+    setSuggestions(null)
   }
 
   const handleAnimation = () => {
     if (!(coords1 && coords2)) {
       return s.fade_in
-    } else if (distance) {
+    } else if ((coords1 && coords2)) {
+      return s.fade_in
+    } else if (!distance) {
       return s.fade_in
     } else {
       return s.fade_out
@@ -117,21 +119,25 @@ export default function DistanceCalculator() {
       <div style={{ display: "flex", columnGap: "5px", justifyContent: "center" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <input
-            style={{ width: "200px"}}
+            style={{ width: "200px" }}
             type="text"
             placeholder="Город 1"
             value={city1}
             onChange={(e) => handlePlaceChanged(e, setCity1)}
           />
           <div style={{ height: "56px" }}>
-            {suggestions1.length > 0 && (
+            {(suggestions1?.length as number) > 0 && (
               <ul style={{ fontSize: "14px", textAlign: "start" }}>
-                {suggestions1.map((suggestion, index) => (
+                {suggestions1?.map((suggestion, index) => (
                   <li
                     className={s.geo_item}
                     key={index}
                     onClick={() => {
-                      handleCitySelect(suggestion, setCity1, setSuggestions1)
+                      handleCitySelect(
+                        suggestion,
+                        setCity1,
+                        setSuggestions1 as Dispatch<SetStateAction<string[]> | null>,
+                      )
                     }}
                   >
                     {suggestion}
@@ -143,21 +149,25 @@ export default function DistanceCalculator() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <input
-              style={{ width: "200px"}}
+            style={{ width: "200px" }}
             type="text"
             placeholder="Город 2"
             value={city2}
             onChange={(e) => handlePlaceChanged(e, setCity2)}
           />
           <div style={{ height: "56px" }}>
-            {suggestions2.length > 0 && (
+            {(suggestions2?.length as number) > 0 && (
               <ul style={{ fontSize: "14px", textAlign: "start" }}>
-                {suggestions2.map((suggestion, index) => (
+                {suggestions2?.map((suggestion, index) => (
                   <li
                     className={s.geo_item}
                     key={index}
                     onClick={() => {
-                      handleCitySelect(suggestion, setCity2, setSuggestions2)
+                      handleCitySelect(
+                        suggestion,
+                        setCity2,
+                        setSuggestions2 as Dispatch<SetStateAction<string[]> | null>,
+                      )
                     }}
                   >
                     {suggestion}
@@ -168,10 +178,7 @@ export default function DistanceCalculator() {
           </div>
         </div>
       </div>
-      <div
-        className={`${s.fade_text} ${handleAnimation()}`}
-        // onAnimationEnd={handleAnimationEnd}
-      >
+      <div className={`${s.fade_text} ${handleAnimation()}`}>
         {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}
       </div>
     </div>
