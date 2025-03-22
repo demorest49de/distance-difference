@@ -53,7 +53,7 @@ export default function DistanceCalculator() {
 
   useEffect(() => {
     const getCoordinatesForCity = async () => {
-      if (city1) {
+      if (city1.length > 2) {
         const coords = await fetchCoordinates(city1)
         setCoords1(coords)
       }
@@ -63,7 +63,7 @@ export default function DistanceCalculator() {
 
   useEffect(() => {
     const getCoordinatesForCity = async () => {
-      if (city2) {
+      if (city2.length > 2) {
         const coords = await fetchCoordinates(city2)
         setCoords2(coords)
       }
@@ -114,9 +114,10 @@ export default function DistanceCalculator() {
   return (
     <div>
       <h1>Расстояние между городами</h1>
-      <div style={{ display: "flex", columnGap: "4px", justifyContent: "center" }}>
+      <div style={{ display: "flex", columnGap: "5px", justifyContent: "center" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <input
+            style={{ width: "200px"}}
             type="text"
             placeholder="Город 1"
             value={city1}
@@ -142,6 +143,7 @@ export default function DistanceCalculator() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <input
+              style={{ width: "200px"}}
             type="text"
             placeholder="Город 2"
             value={city2}
