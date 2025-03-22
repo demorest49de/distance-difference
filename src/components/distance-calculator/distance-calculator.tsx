@@ -28,11 +28,15 @@ export default function DistanceCalculator() {
   const [isClicked1, setIsClicked1] = useState<boolean>(false)
   const [isClicked2, setIsClicked2] = useState<boolean>(false)
 
+  console.log(" coords1  coords2: ", coords1, coords2)
+
   useEffect(() => {
     const getCoordinatesForCity = async () => {
-      if (isClicked1) {
+      if (city1?.length > 2 && isClicked1) {
         const coords = await fetchCoordinates(city1)
         setCoords1(coords)
+      } else {
+        setCoords1(null)
       }
     }
     void getCoordinatesForCity()
@@ -40,9 +44,11 @@ export default function DistanceCalculator() {
 
   useEffect(() => {
     const getCoordinatesForCity = async () => {
-      if (isClicked2) {
+      if (city2?.length > 2 && isClicked2) {
         const coords = await fetchCoordinates(city2)
         setCoords2(coords)
+      } else {
+        setCoords2(null)
       }
     }
     void getCoordinatesForCity()
@@ -78,6 +84,8 @@ export default function DistanceCalculator() {
       const dist = calculateDistance(coords1.lat, coords1.lng, coords2.lat, coords2.lng)
       const roundedDistance = roundToNearest10km(dist)
       setDistance(roundedDistance)
+      setIsClicked1(false)
+      setIsClicked2(false)
     } else {
       setDistance(null)
     }
@@ -87,7 +95,6 @@ export default function DistanceCalculator() {
     e: ChangeEvent<HTMLInputElement>,
     setCity: Dispatch<SetStateAction<string>>,
   ) => {
-    console.log(" e.target.value: ", e.target.value)
     setCity(e.target.value)
   }
 
@@ -181,9 +188,10 @@ export default function DistanceCalculator() {
           </div>
         </div>
       </div>
-      <div className={`${s.fade_text} ${handleAnimation()}`}>
-        {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}
-      </div>
+      {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}
+      {/*<div className={`${s.fade_text} ${handleAnimation()}`}>*/}
+      {/*  {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}*/}
+      {/*</div>*/}
     </div>
   )
 }
