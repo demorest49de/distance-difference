@@ -8,18 +8,21 @@ export type Coordinates = {
   lng: number
 }
 
-const fakeCoords1: Coordinates = { lat: 51.6687, lng: 39.184 }
-const fakeCoords2: Coordinates = { lat: 55.755864, lng: 37.617698 }
+const mockCoords1: Coordinates = { lat: 51.6687, lng: 39.184 }
+const mockCoords2: Coordinates = { lat: 55.755864, lng: 37.617698 }
+
+const mockSugg1: string[] = ["Воронеж", "Воронеж1", "Воронеж2"]
+const mockSugg2: string[] = ["Москва", "Москва1", "Москва2"]
 
 export default function DistanceCalculator() {
-  const [city1, setCity1] = useState<string>("Воронеж")
-  const [city2, setCity2] = useState<string>("Москва")
-  const [coords1, setCoords1] = useState<Coordinates | null>(fakeCoords1)
-  const [coords2, setCoords2] = useState<Coordinates | null>(fakeCoords2)
+  const [city1, setCity1] = useState<string>("")
+  const [city2, setCity2] = useState<string>("")
+  const [coords1, setCoords1] = useState<Coordinates | null>(null)
+  const [coords2, setCoords2] = useState<Coordinates | null>(null)
   const [distance, setDistance] = useState<number | null>(null)
 
-  const [suggestions1, setSuggestions1] = useState<string[]>([])
-  const [suggestions2, setSuggestions2] = useState<string[]>([])
+  const [suggestions1, setSuggestions1] = useState<string[]>(mockSugg1)
+  const [suggestions2, setSuggestions2] = useState<string[]>(mockSugg2)
 
   useEffect(() => {
     const getSuggestions = async () => {
@@ -30,7 +33,7 @@ export default function DistanceCalculator() {
         setSuggestions1([])
       }
     }
-    void getSuggestions()
+    // void getSuggestions()
   }, [city1])
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function DistanceCalculator() {
         setSuggestions2([])
       }
     }
-    void getSuggestions()
+    // void getSuggestions()
   }, [city2])
 
   useEffect(() => {
@@ -77,27 +80,69 @@ export default function DistanceCalculator() {
     e: ChangeEvent<HTMLInputElement>,
     setCity: Dispatch<SetStateAction<string>>,
   ) => {
+    console.log(" e.target.value: ", e.target.value)
     setCity(e.target.value)
+  }
+
+  const handleCitySelect = (
+    city: string,
+    setCity: Dispatch<SetStateAction<string>>,
+    setSuggestions: Dispatch<SetStateAction<string[]>>,
+  ) => {
+    setCity(city)
+    setSuggestions([])
   }
 
   return (
     <div>
       <h1>Расстояние между городами</h1>
       <div style={{ display: "flex", columnGap: "4px", justifyContent: "center" }}>
-        <input
-          type="text"
-          placeholder="Город 1"
-          value={city1}
-          onChange={(e) => handlePlaceChanged(e, setCity1)}
-        />
-        <input
-          type="text"
-          placeholder="Город 2"
-          value={city2}
-          onChange={(e) => handlePlaceChanged(e, setCity2)}
-        />
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <input
+            type="text"
+            placeholder="Город 1"
+            value={city1}
+            onChange={(e) => handlePlaceChanged(e, setCity1)}
+          />
+          {suggestions1.length > 0 && (
+            <ul style={{ fontSize: "14px", textAlign: "start" }}>
+              {suggestions1.map((suggestion, index) => (
+                <li style={{cursor: "pointer"}}
+                  key={index}
+                  onClick={() => {
+                    handleCitySelect(suggestion, setCity1, setSuggestions1)
+                  }}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <input
+            type="text"
+            placeholder="Город 2"
+            value={city2}
+            onChange={(e) => handlePlaceChanged(e, setCity2)}
+          />
+          {suggestions2.length > 0 && (
+            <ul style={{ fontSize: "14px", textAlign: "start" }}>
+              {suggestions2.map((suggestion, index) => (
+                  <li style={{cursor: "pointer"}}
+                  key={index}
+                  onClick={() => {
+                    handleCitySelect(suggestion, setCity2, setSuggestions2)
+                  }}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-      {distance && <p>Расстояние: {distance} км</p>}
+      {distance ? <p>Расстояние: {distance} км</p> : <p>Введите названия городов</p>}
     </div>
   )
 }
