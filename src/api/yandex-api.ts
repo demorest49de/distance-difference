@@ -1,4 +1,4 @@
-import { Coordinates } from "../components/DistanceCalculator/DistanceCalculator"
+import { Coordinates } from "../components/distance-calculator/distance-calculator"
 import {GeoCoderResponse, GeoSuggestResponse, GeoSuggestResponseResults} from "../types/types"
 
 export const fetchCoordinates = async (query: string): Promise<Coordinates | null> => {

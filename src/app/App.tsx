@@ -1,5 +1,5 @@
 import React from "react"
-import DistanceCalculator from "../components/DistanceCalculator/DistanceCalculator"
+import DistanceCalculator from "../components/distance-calculator/distance-calculator"
 import "./App.css"
 
 function App() {

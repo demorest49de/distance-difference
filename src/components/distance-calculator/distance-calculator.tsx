@@ -2,6 +2,7 @@ import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } fro
 import { fetchCoordinates, fetchSuggestions } from "../../api/yandex-api"
 import { calculateDistance } from "../../utils/calculator"
 import { roundToNearest10km } from "../../utils/distanceRound"
+import s from './distance-calculator.module.css'
 
 export type Coordinates = {
   lat: number
@@ -107,7 +108,7 @@ export default function DistanceCalculator() {
           {suggestions1.length > 0 && (
             <ul style={{ fontSize: "14px", textAlign: "start" }}>
               {suggestions1.map((suggestion, index) => (
-                <li style={{cursor: "pointer"}}
+                <li className={s.geo_item}
                   key={index}
                   onClick={() => {
                     handleCitySelect(suggestion, setCity1, setSuggestions1)
@@ -129,7 +130,7 @@ export default function DistanceCalculator() {
           {suggestions2.length > 0 && (
             <ul style={{ fontSize: "14px", textAlign: "start" }}>
               {suggestions2.map((suggestion, index) => (
-                  <li style={{cursor: "pointer"}}
+                  <li className={s.geo_item}
                   key={index}
                   onClick={() => {
                     handleCitySelect(suggestion, setCity2, setSuggestions2)
