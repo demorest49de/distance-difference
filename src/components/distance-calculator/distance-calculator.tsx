@@ -23,9 +23,6 @@ export default function DistanceCalculator() {
   const [suggestions1, setSuggestions1] = useState<string[] | null>(null)
   const [suggestions2, setSuggestions2] = useState<string[] | null>(null)
 
-  // const [isClicked1, setIsClicked1] = useState<boolean>(false)
-  // const [isClicked2, setIsClicked2] = useState<boolean>(false)
-
   //geocoder
   useEffect(() => {
     const getCoordinatesForCity = async () => {
@@ -113,11 +110,9 @@ export default function DistanceCalculator() {
     suggestedGeo: string,
     setCity: Dispatch<SetStateAction<string>>,
     setSuggestions: Dispatch<SetStateAction<string[]> | null>,
-    // setIsClicked: Dispatch<SetStateAction<boolean>>,
   ) => {
     setCity(suggestedGeo)
     setSuggestions(null)
-    // setIsClicked(true)
   }
 
   function handleKeyDown(
@@ -125,10 +120,8 @@ export default function DistanceCalculator() {
     city: string,
     setCity: Dispatch<SetStateAction<string>>,
     setSuggestions: Dispatch<SetStateAction<string[]> | null>,
-    // setIsClicked: Dispatch<SetStateAction<boolean>>,
   ) {
     if (e.key === Key.Enter) {
-      // handleCitySelect(city, setCity, setSuggestions, setIsClicked)
       handleCitySelect(city, setCity, setSuggestions)
     }
     if (e.key === Key.Escape) {
@@ -156,7 +149,6 @@ export default function DistanceCalculator() {
                 suggested,
                 setCity1,
                 setSuggestions1 as Dispatch<SetStateAction<string[]> | null>,
-                // setIsClicked1,
               )
             }}
           />
@@ -172,7 +164,6 @@ export default function DistanceCalculator() {
                         suggestion,
                         setCity1,
                         setSuggestions1 as Dispatch<SetStateAction<string[]> | null>,
-                        // setIsClicked1 as Dispatch<SetStateAction<boolean>>,
                       )
                     }}
                   >
@@ -198,7 +189,6 @@ export default function DistanceCalculator() {
                 suggested,
                 setCity2,
                 setSuggestions2 as Dispatch<SetStateAction<string[]> | null>,
-                // setIsClicked2,
               )
             }}
           />
@@ -214,7 +204,6 @@ export default function DistanceCalculator() {
                         suggestion,
                         setCity2,
                         setSuggestions2 as Dispatch<SetStateAction<string[]> | null>,
-                        // setIsClicked2 as Dispatch<SetStateAction<boolean>>,
                       )
                     }}
                   >
