@@ -8,6 +8,10 @@ export type Coordinates = {
   lat: number
   lng: number
 }
+enum Key {
+  Enter = "Enter",
+  Escape = "Escape",
+}
 
 export default function DistanceCalculator() {
   const [city1, setCity1] = useState<string>("")
@@ -22,6 +26,7 @@ export default function DistanceCalculator() {
   const [isClicked1, setIsClicked1] = useState<boolean>(false)
   const [isClicked2, setIsClicked2] = useState<boolean>(false)
 
+  //geocoder
   useEffect(() => {
     const getCoordinatesForCity = async () => {
       if (city1?.length > 2 && isClicked1) {
@@ -103,14 +108,26 @@ export default function DistanceCalculator() {
   }
 
   const handleCitySelect = (
-    city: string,
+    suggestedGeo: string,
     setCity: Dispatch<SetStateAction<string>>,
     setSuggestions: Dispatch<SetStateAction<string[]> | null>,
     setIsClicked: Dispatch<SetStateAction<boolean>>,
   ) => {
-    setCity(city)
+    setCity(suggestedGeo)
     setSuggestions(null)
     setIsClicked(true)
+  }
+
+  function handleKeyDown(
+    e: React.KeyboardEvent<HTMLInputElement>,
+    city: string,
+    setCity: Dispatch<SetStateAction<string>>,
+    setSuggestions: Dispatch<SetStateAction<string[]> | null>,
+    setIsClicked: Dispatch<SetStateAction<boolean>>,
+  ) {
+    if (e.key === Key.Enter) {
+      handleCitySelect(city, setCity, setSuggestions, setIsClicked)
+    }
   }
 
   return (
@@ -124,6 +141,16 @@ export default function DistanceCalculator() {
             placeholder="Город 1"
             value={city1}
             onChange={(e) => handlePlaceChanged(e, setCity1)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              const suggested = suggestions1!.length! > 0 ? suggestions1![0] : city1
+              handleKeyDown(
+                e,
+                suggested,
+                setCity1,
+                setSuggestions1 as Dispatch<SetStateAction<string[]> | null>,
+                setIsClicked1,
+              )
+            }}
           />
           <div style={{ height: "56px" }}>
             {(suggestions1?.length as number) > 0 && (
@@ -155,6 +182,16 @@ export default function DistanceCalculator() {
             placeholder="Город 2"
             value={city2}
             onChange={(e) => handlePlaceChanged(e, setCity2)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              const suggested = suggestions2!.length! > 0 ? suggestions2![0] : city2
+              handleKeyDown(
+                  e,
+                  suggested,
+                  setCity2,
+                  setSuggestions2 as Dispatch<SetStateAction<string[]> | null>,
+                  setIsClicked2,
+              )
+            }}
           />
           <div style={{ height: "56px" }}>
             {(suggestions2?.length as number) > 0 && (
