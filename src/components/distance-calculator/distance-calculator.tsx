@@ -128,6 +128,9 @@ export default function DistanceCalculator() {
     if (e.key === Key.Enter) {
       handleCitySelect(city, setCity, setSuggestions, setIsClicked)
     }
+    if (e.key === Key.Escape) {
+      setSuggestions(null)
+    }
   }
 
   return (
@@ -139,10 +142,12 @@ export default function DistanceCalculator() {
             style={{ width: "200px" }}
             type="text"
             placeholder="Город 1"
+            title="Введите название города и выберите его в подсказке ниже нажав Enter"
             value={city1}
             onChange={(e) => handlePlaceChanged(e, setCity1)}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              const suggested = suggestions1!.length! > 0 ? suggestions1![0] : city1
+              debugger
+              const suggested = suggestions1?.length! > 0 ? suggestions1![0] : city1
               handleKeyDown(
                 e,
                 suggested,
@@ -180,16 +185,17 @@ export default function DistanceCalculator() {
             style={{ width: "200px" }}
             type="text"
             placeholder="Город 2"
+            title="Введите название города и выберите его в подсказке ниже нажав Enter"
             value={city2}
             onChange={(e) => handlePlaceChanged(e, setCity2)}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              const suggested = suggestions2!.length! > 0 ? suggestions2![0] : city2
+              const suggested = suggestions2?.length! > 0 ? suggestions2![0] : city2
               handleKeyDown(
-                  e,
-                  suggested,
-                  setCity2,
-                  setSuggestions2 as Dispatch<SetStateAction<string[]> | null>,
-                  setIsClicked2,
+                e,
+                suggested,
+                setCity2,
+                setSuggestions2 as Dispatch<SetStateAction<string[]> | null>,
+                setIsClicked2,
               )
             }}
           />
